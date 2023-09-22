@@ -31,10 +31,33 @@ const gameboard = ( () =>
                         if(gameboard.makeMove(index, currentPlayer.symbol))
                         {gameboard.playerSwap(currentPlayer,player1,player2);
 
-                            if (gameboard.victory(currentPlayer.symbol)) 
-                            {
-                                console.log(`${currentPlayer.name} wins`);
-                                gameboard.clearBoard();
+                            if (gameboard.victory("X")) 
+                            {   
+                                winner = gameboard.displaywinner(player1)
+                                document.querySelector('.biggrid').append(winner)
+                                console.log(`${player1.name} wins`);
+                                
+                                winner.addEventListener('click',() => { clearBoard() })
+                            }
+
+                            else if (gameboard.victory("O")) 
+                            {   
+                                winner = gameboard.displaywinner(player2)
+                                document.querySelector('.biggrid').append(winner)
+                                console.log(`${player2.name} wins`);
+                                
+                                winner.addEventListener('click',() => { clearBoard() })
+                            }
+
+
+                            else if (gameboard.victory("X") != true && gameboard.victory("O") != true && gameboard.countspaces() == 9)
+                            {   console.log("entered")
+                                
+                                tieboard = gameboard.displaytie("tie")
+                                document.querySelector('.biggrid').append(tieboard)
+                                console.log(`tie`);
+                                
+                                tieboard.addEventListener('click',() => { clearBoard() })
                             }
                     }});
                 })(i);
@@ -44,15 +67,18 @@ const gameboard = ( () =>
 
         const clearBoard = () => {
             const bigGrid = document.querySelector('.biggrid');
+            
             bigGrid.innerHTML = "";
             grids = [];
-            create(); // Recreate the board and event listeners
+            create(); 
+            currentPlayer = player1;
         };
 
         const victory = (symbol) =>
             {
                 if (grids[0].textContent == symbol && grids[4].textContent == symbol && grids[8].textContent == symbol)
-                    {
+                    {   
+                        
                         return true;
 
                     }
@@ -77,6 +103,28 @@ const gameboard = ( () =>
                         return true;
                     }
                 
+                else if (grids[0].textContent == symbol && grids[3].textContent == symbol && grids[6].textContent == symbol)
+                    {
+                        return true;
+                    }
+
+                else if (grids[1].textContent == symbol && grids[4].textContent == symbol && grids[7].textContent == symbol)
+                    {
+                        return true;
+                    }
+                else if (grids[2].textContent == symbol && grids[5].textContent == symbol && grids[8].textContent == symbol)
+                    {
+                        return true;
+                    }
+
+
+
+
+
+
+
+
+
                 else 
                     {
                         return false;
@@ -117,9 +165,52 @@ const gameboard = ( () =>
                 
             }
 
-            return { makeMove, victory, create, playerSwap,clearBoard }
+            const displaywinner = (winner) =>
+            {   
+                const winnerboard = document.createElement('div')
+                winnerboard.classList.add('winnerboard')
 
+                
 
+                
+                winnerboard.textContent = `${winner.name} wins! \n Click to restart`
+                
+                return winnerboard;
+
+            }
+
+            const displaytie = () =>
+            {   
+                const tieboard = document.createElement('div')
+                tieboard.classList.add('winnerboard')
+
+                
+
+                
+                tieboard.textContent = `It's a tie! \n Click to restart`
+                
+                return tieboard;
+
+            }
+
+            const countspaces = () => 
+            {   
+                var count = 0;
+                
+                for (var j = 0; j<9;j++)
+                    {
+                        if (grids[j].textContent != "")
+                            {
+                                count++
+                            }
+                        console.log(count)
+                        return count
+                    }
+            }
+        
+            return { makeMove, victory, create, playerSwap,clearBoard, displaywinner,countspaces,displaytie }
+
+            
     }
 
 )();

@@ -1,5 +1,16 @@
 
-
+startingpage = document.querySelector('.starter');
+var form = document.querySelector(".playerform");
+function handleForm(event) { event.preventDefault(); 
+    var pl1name  = document.getElementById('pl1').value;
+    var pl2name  = document.getElementById('pl2').value; 
+    const player1 = player(pl1name, "X");
+    const player2 = player(pl2name, "O");
+    initializegame(player1,player2)
+ 
+}
+form.addEventListener('submit', handleForm
+);
 
 const player = (name,symbol) => 
     {  
@@ -10,7 +21,8 @@ const player = (name,symbol) =>
 
     }
 
-
+document.querySelector('#namesubmit').addEventListener('click',()=> { startingpage.style.display = 'none' })
+const initializegame = (player1,player2) => {
 const gameboard = ( () => 
     {   
         let grids = [];
@@ -50,7 +62,7 @@ const gameboard = ( () =>
                             }
 
 
-                            else if (gameboard.victory("X") != true && gameboard.victory("O") != true && gameboard.countspaces() == 9)
+                            else if (gameboard.victory("X") != true && gameboard.victory("O") != true && gameboard.countspaces() == true)
                             {   console.log("entered")
                                 
                                 tieboard = gameboard.displaytie("tie")
@@ -78,42 +90,42 @@ const gameboard = ( () =>
             {
                 if (grids[0].textContent == symbol && grids[4].textContent == symbol && grids[8].textContent == symbol)
                     {   
-                        
+                        colorchange(0,4,8)
                         return true;
 
                     }
 
                 else if (grids[2].textContent == symbol && grids[4].textContent == symbol && grids[6].textContent == symbol)
-                    {
+                    {   colorchange(2,4,6)
                         return true;
                     }
 
                 else if (grids[0].textContent == symbol && grids[1].textContent == symbol && grids[2].textContent == symbol)
-                    {
+                    {   colorchange(0,1,2)
                         return true;
                     }
 
                 else if (grids[3].textContent == symbol && grids[4].textContent == symbol && grids[5].textContent == symbol)
-                    {
+                    {   colorchange(3,4,5)
                         return true;
                     }
 
                 else if (grids[6].textContent == symbol && grids[7].textContent == symbol && grids[8].textContent == symbol)
-                    {
+                    {   colorchange(6,7,8)
                         return true;
                     }
                 
                 else if (grids[0].textContent == symbol && grids[3].textContent == symbol && grids[6].textContent == symbol)
-                    {
+                    {   colorchange(0,3,6)
                         return true;
                     }
 
                 else if (grids[1].textContent == symbol && grids[4].textContent == symbol && grids[7].textContent == symbol)
-                    {
+                    {   colorchange(1,4,7)
                         return true;
                     }
                 else if (grids[2].textContent == symbol && grids[5].textContent == symbol && grids[8].textContent == symbol)
-                    {
+                    {   colorchange(2,5,8)
                         return true;
                     }
 
@@ -164,7 +176,12 @@ const gameboard = ( () =>
                 
                 
             }
-
+            const colorchange = (i1,i2,i3) =>
+            {
+                grids[i1].classList.add('victory')
+                grids[i2].classList.add('victory')
+                grids[i3].classList.add('victory')
+            }
             const displaywinner = (winner) =>
             {   
                 const winnerboard = document.createElement('div')
@@ -195,33 +212,25 @@ const gameboard = ( () =>
 
             const countspaces = () => 
             {   
-                var count = 0;
                 
-                for (var j = 0; j<9;j++)
+                if(grids[0].textContent != "" && grids[1].textContent != "" && grids[2].textContent != "" && grids[3].textContent != "" && grids[4].textContent != "" && grids[5].textContent != "" && grids[6].textContent != "" && grids[7].textContent != "" && grids[8].textContent != "")
                     {
-                        if (grids[j].textContent != "")
-                            {
-                                count++
-                            }
-                        console.log(count)
-                        return count
+                        return true
                     }
+                return false;
+            
             }
         
-            return { makeMove, victory, create, playerSwap,clearBoard, displaywinner,countspaces,displaytie }
+            return { colorchange, makeMove, victory, create, playerSwap,clearBoard, displaywinner,countspaces,displaytie }
 
             
     }
 
 )();
 
-const play = () =>
-{
-
-}
 
 
 gameboard.create()
-const player1 = player("Player 1", "X");
-const player2 = player("Player 2", "O");
+
 let currentPlayer = player1
+}

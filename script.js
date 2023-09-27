@@ -4,9 +4,12 @@ var form = document.querySelector(".playerform");
 function handleForm(event) { event.preventDefault(); 
     var pl1name  = document.getElementById('pl1').value;
     var pl2name  = document.getElementById('pl2').value; 
+    var checkbox= document.querySelector('#AI').checked;
+
     const player1 = player(pl1name, "X");
     const player2 = player(pl2name, "O");
-    initializegame(player1,player2)
+    console.log(checkbox)
+    initializegame(player1,player2,checkbox)
  
 }
 form.addEventListener('submit', handleForm
@@ -22,11 +25,12 @@ const player = (name,symbol) =>
     }
 
 document.querySelector('#namesubmit').addEventListener('click',()=> { startingpage.style.display = 'none' })
-const initializegame = (player1,player2) => {
+const initializegame = (player1,player2,check) => {
 const gameboard = ( () => 
     {   
         let grids = [];
-
+        let score1 = 0
+        let score2 = 0
 
         const create = () => 
         { 
@@ -39,15 +43,69 @@ const gameboard = ( () =>
                 document.querySelector('.biggrid').append(grids[i]);
 
                 (function (index) {
+
+                    
+
                     grids[index].addEventListener('click', () => {
-                        if(gameboard.makeMove(index, currentPlayer.symbol))
-                        {gameboard.playerSwap(currentPlayer,player1,player2);
+                        if(gameboard.makeMove(index, currentPlayer.symbol,check))
+                        {   
+                            
+                            document.querySelector('.p1').textContent = `${player1.name}'s Score: \n ${score1}`;
+                            document.querySelector('.p2').textContent = `${player2.name}'s Score: \n ${score2}`
+                            
+                            
+                            gameboard.playerSwap(currentPlayer,player1,player2);
+
+                            if(check == true && currentPlayer == player2)
+                                {
+                                    setTimeout(makeMove(index,currentPlayer.symbol,check),100)
+                                    playerSwap(currentPlayer,player1,player2)
+                                    
+                                    let finalindex = -1
+                                    let counter = 0
+                                    for(i=0;i<9;i++)
+                                        {
+                                            if(grids[i].textContent=="")
+                                                {
+                                                    counter+=1
+                                                    finalindex = i
+                                                }
+                                        }
+                                    if(counter==1)
+                                        {   console.log("countr is 1")
+                                            console.log(i)
+                                            grids[finalindex].textContent = "X"
+                                            if (gameboard.victory("X")) 
+                                                {   
+                                                    winner = gameboard.displaywinner(player1)
+                                                    document.querySelector('.biggrid').append(winner)
+                                                    console.log(`${player1.name} wins`);
+                                                    score1++
+                                                    document.querySelector('.p1').textContent = `${player1.name}'s Score: \n ${score1}`;
+                                                    winner.addEventListener('click',() => { clearBoard() })
+                                                }
+                                                            }
+                                                else if (gameboard.victory("X") != true && gameboard.victory("O") != true && gameboard.countspaces() == true)
+                                                {   console.log("entered")
+                                                            
+                                                    tieboard = gameboard.displaytie("tie")
+                                                    document.querySelector('.biggrid').append(tieboard)
+                                                    console.log(`tie`);
+                                                                
+                                                    tieboard.addEventListener('click',() => { clearBoard() })
+                                                }
+
+                                    
+
+                                }
 
                             if (gameboard.victory("X")) 
                             {   
                                 winner = gameboard.displaywinner(player1)
                                 document.querySelector('.biggrid').append(winner)
                                 console.log(`${player1.name} wins`);
+                                score1++
+                                document.querySelector('.p1').textContent = `${player1.name}'s Score: \n ${score1}`;
                                 
                                 winner.addEventListener('click',() => { clearBoard() })
                             }
@@ -57,7 +115,8 @@ const gameboard = ( () =>
                                 winner = gameboard.displaywinner(player2)
                                 document.querySelector('.biggrid').append(winner)
                                 console.log(`${player2.name} wins`);
-                                
+                                score2++
+                                document.querySelector('.p2').textContent = `${player2.name}'s Score: \n ${score2}`
                                 winner.addEventListener('click',() => { clearBoard() })
                             }
 
@@ -148,16 +207,51 @@ const gameboard = ( () =>
             };
 
             
-            const makeMove = (index,symbol) =>
-            {
-                if (grids[index].textContent == "")
-                    {
-                        grids[index].textContent = symbol
-                        return true;
-                        
+            const makeMove = (index,symbol,checker) =>
+            { 
+                if (checker == false)
+                    {if (grids[index].textContent == "")
+                        {
+                            grids[index].textContent = symbol
+                            return true;
+                            
+                        }
+                    return false;
                     }
-                return false;
 
+                else
+                {
+                    if (symbol == "O")
+
+                        {   
+                            let flag = false
+                            while (flag == false)
+                            {   
+                                let index = Math.floor(Math.random()*9)
+                                if (grids[index].textContent == "")
+                                    {   
+                                        grids[index].textContent = "O"
+                                        flag = true
+                                        
+                                    }
+                            }
+                            return true;
+
+
+                        }
+                    
+                    else   
+                        {
+                            if (grids[index].textContent == "")
+                        {
+                            grids[index].textContent = symbol
+                            return true;
+                            
+                        }
+                    return false;
+
+                        }
+                }
 
             };
 
